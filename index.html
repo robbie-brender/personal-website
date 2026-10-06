@@ -188,7 +188,9 @@
       position: fixed;
       z-index: 90;
       inset: 74px 0 0;
+      height: calc(100dvh - 74px);
       overflow-y: auto;
+      overscroll-behavior: contain;
       padding: 30px 20px;
       color: var(--white);
       background: var(--ink);
@@ -353,16 +355,16 @@
         <span class="menu-icon" aria-hidden="true"></span>
       </button>
     </div>
-    <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation" aria-hidden="true">
-      <div class="nav-links">
-        <a href="#what-i-do">What I do</a>
-        <a href="#how-it-works">How it works</a>
-        <a href="#why-me">Why me</a>
-        <a href="#faq">FAQ</a>
-        <a class="button calendly-trigger" href="https://calendly.com/robbie-brender/30min" target="_blank" rel="noopener noreferrer">Book a 30-minute call</a>
-      </div>
-    </nav>
   </header>
+  <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation" aria-hidden="true">
+    <div class="nav-links">
+      <a href="#what-i-do">What I do</a>
+      <a href="#how-it-works">How it works</a>
+      <a href="#why-me">Why me</a>
+      <a href="#faq">FAQ</a>
+      <a class="button calendly-trigger" href="https://calendly.com/robbie-brender/30min" target="_blank" rel="noopener noreferrer">Book a 30-minute call</a>
+    </div>
+  </nav>
 
   <main id="main">
     <section class="hero" id="top">
