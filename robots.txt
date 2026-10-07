@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://robbiebrender.com.au/sitemap.xml
