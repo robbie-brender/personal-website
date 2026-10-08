@@ -7,6 +7,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>document.documentElement.classList.add('js');</script>
   <title>Fractional CTO Sydney | Robbie Brender</title>
   <meta name="description" content="Fractional CTO in Sydney for Australian small businesses. Hands-on AI automation, integrations and technology leadership without a full-time hire.">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
@@ -366,8 +367,56 @@
     .footer-details a:hover { color: var(--accent-dark); }
     .copyright { font-size: 0.85rem; }
 
-    .reveal { opacity: 0; transform: translateY(18px); transition: opacity 600ms ease, transform 600ms ease; }
-    .reveal.visible { opacity: 1; transform: none; }
+    .scroll-progress {
+      position: fixed;
+      z-index: 999;
+      top: 0;
+      right: 0;
+      left: 0;
+      height: 3px;
+      background: var(--accent);
+      pointer-events: none;
+      transform: scaleX(0);
+      transform-origin: left;
+      will-change: transform;
+    }
+    .js .reveal {
+      --reveal-delay: 0ms;
+      --reveal-x: 0px;
+      --reveal-y: 28px;
+      --reveal-scale: 0.985;
+      opacity: 0;
+      transform: translate3d(var(--reveal-x), var(--reveal-y), 0) scale(var(--reveal-scale));
+      transition: opacity 750ms cubic-bezier(0.22, 1, 0.36, 1), transform 750ms cubic-bezier(0.22, 1, 0.36, 1);
+      transition-delay: var(--reveal-delay);
+      will-change: opacity, transform;
+    }
+    .js .reveal.visible { opacity: 1; transform: none; will-change: auto; }
+    .js .button.reveal.visible:hover { transform: translateY(-2px); }
+    .js .problem-grid .prose:first-child, .js .headshot { --reveal-x: -16px; --reveal-y: 0px; }
+    .js .problem-grid .prose:last-child, .js .why-grid .prose, .js .fit-panel:nth-child(2) { --reveal-x: 16px; --reveal-y: 0px; }
+    .js .service-card { --reveal-y: 34px; --reveal-scale: 0.97; }
+    .js .step { --reveal-x: 20px; --reveal-y: 0px; }
+    .js .hero .reveal:nth-child(2), .js .problem-grid .reveal:nth-child(2), .js .fit-grid .reveal:nth-child(2) { --reveal-delay: 90ms; }
+    .js .hero .reveal:nth-child(3), .js .service-card:nth-child(2), .js .step:nth-child(2) { --reveal-delay: 120ms; }
+    .js .hero .reveal:nth-child(4), .js .service-card:nth-child(3), .js .step:nth-child(3) { --reveal-delay: 240ms; }
+    .js .service-card:nth-child(4), .js .step:nth-child(4) { --reveal-delay: 360ms; }
+    .js .problem-list li, .js .credentials li, .js .faq-item {
+      --item-delay: 80ms;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 520ms ease, transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+      transition-delay: var(--item-delay);
+    }
+    .js .problem-list li:nth-child(2), .js .credentials li:nth-child(2), .js .faq-item:nth-child(2) { --item-delay: 135ms; }
+    .js .problem-list li:nth-child(3), .js .credentials li:nth-child(3), .js .faq-item:nth-child(3) { --item-delay: 190ms; }
+    .js .problem-list li:nth-child(4), .js .credentials li:nth-child(4), .js .faq-item:nth-child(4) { --item-delay: 245ms; }
+    .js .problem-list li:nth-child(5), .js .credentials li:nth-child(5), .js .faq-item:nth-child(5) { --item-delay: 300ms; }
+    .js .faq-item:nth-child(6) { --item-delay: 355ms; }
+    .js .faq-item:nth-child(7) { --item-delay: 410ms; }
+    .js .faq-item:nth-child(8) { --item-delay: 465ms; }
+    .js .faq-item:nth-child(9) { --item-delay: 520ms; }
+    .js .prose.visible .problem-list li, .js .prose.visible .credentials li, .js .faq-list.visible .faq-item { opacity: 1; transform: none; }
 
     @media (min-width: 600px) {
       .container { width: min(calc(100% - 64px), var(--max)); }
@@ -394,12 +443,14 @@
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
       *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
-      .reveal { opacity: 1; transform: none; }
+      .scroll-progress { display: none; }
+      .js .reveal, .js .problem-list li, .js .credentials li, .js .faq-item { opacity: 1; transform: none; }
     }
   </style>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
+  <div class="scroll-progress" aria-hidden="true"></div>
 
   <header class="site-header">
     <div class="container header-inner">
@@ -689,8 +740,25 @@
             observer.unobserve(entry.target);
           }
         });
-      }, { threshold: 0.08, rootMargin: '0px 0px -30px' });
+      }, { threshold: 0.12, rootMargin: '0px 0px -8%' });
       revealItems.forEach(item => observer.observe(item));
+    }
+
+    if (!reducedMotion) {
+      const scrollProgress = document.querySelector('.scroll-progress');
+      let scrollFrame = 0;
+      const updateScrollProgress = () => {
+        const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = scrollableHeight > 0 ? window.scrollY / scrollableHeight : 0;
+        scrollProgress.style.transform = `scaleX(${Math.min(Math.max(progress, 0), 1)})`;
+        scrollFrame = 0;
+      };
+      const queueScrollUpdate = () => {
+        if (!scrollFrame) scrollFrame = requestAnimationFrame(updateScrollProgress);
+      };
+      window.addEventListener('scroll', queueScrollUpdate, { passive: true });
+      window.addEventListener('resize', queueScrollUpdate);
+      updateScrollProgress();
     }
 
     document.getElementById('year').textContent = new Date().getFullYear();
